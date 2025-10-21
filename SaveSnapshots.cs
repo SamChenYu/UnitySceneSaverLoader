@@ -17,13 +17,13 @@ public class SaveSnapshots : MonoBehaviour
 
         foreach (var root in rootObjects)
         {
-            SaveGameObjectRecursive(root, folderPath);
+            SaveGameObjectAsPrefab(root, folderPath);
         }
 
         Debug.Log("Scene snapshot prefabs saved!");
     }
 
-    void SaveGameObjectRecursive(GameObject go, string folderPath)
+    void SaveGameObjectAsPrefab(GameObject go, string folderPath)
     {
         // Clone the object first to avoid prefab instance issues
         GameObject clone = Instantiate(go);
@@ -33,17 +33,11 @@ public class SaveSnapshots : MonoBehaviour
         string prefabPath = Path.Combine(folderPath, clone.name + ".prefab");
         prefabPath = AssetDatabase.GenerateUniqueAssetPath(prefabPath);
 
-        // Save the cloned object as a prefab
+        // Save the cloned object as a prefab (children are included automatically)
         PrefabUtility.SaveAsPrefabAsset(clone, prefabPath);
 
         // Destroy the temporary clone
         DestroyImmediate(clone);
-
-        // Recurse through children
-        foreach (Transform child in go.transform)
-        {
-            SaveGameObjectRecursive(child.gameObject, folderPath);
-        }
     }
 }
 #endif
